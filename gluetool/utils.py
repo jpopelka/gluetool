@@ -14,8 +14,7 @@ import subprocess
 import sys
 import threading
 import time
-import urllib2
-
+from six.moves import urllib
 import bs4
 import urlnorm
 import jinja2
@@ -553,8 +552,9 @@ def fetch_url(url, logger=None, success_codes=(200,)):
     :param str url: URL to get.
     :param gluetool.log.ContextLogger logger: Logger used for logging.
     :param tuple success_codes: tuple of HTTP response codes representing successfull request.
-    :returns: tuple ``(response, content)`` where ``response`` is what :py:func:`urllib2.urlopen`
-      returns, and ``content`` is the payload of the response.
+    :returns: tuple ``(response, content)`` where ``response`` is what
+      :py:func:`six.moves.urllib.request.urlopen` returns, and ``content`` is the payload
+      of the response.
     """
 
     logger = logger or Logging.get_logger()
@@ -562,10 +562,10 @@ def fetch_url(url, logger=None, success_codes=(200,)):
     logger.debug("opening URL '{}'".format(url))
 
     try:
-        response = urllib2.urlopen(url)
+        response = urllib.request.urlopen(url)
         code, content = response.getcode(), response.read()
 
-    except urllib2.HTTPError as exc:
+    except urllib.error.HTTPError as exc:
         logger.exception(exc)
         raise GlueError("Failed to fetch URL '{}': {}".format(url, exc.message))
 
